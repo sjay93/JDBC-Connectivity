@@ -1,0 +1,73 @@
+mysql> tee 'e:\Uta\output.txt'
+mysql> CREATE DATABASE COMPANY;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> USE COMPANY;
+Database changed
+mysql> CREATE TABLE EMPLOYEE
+    -> (
+    -> FNAME VARCHAR(20) NOT NULL,
+    -> MINIT CHAR(3) NULL,
+    -> LNAME VARCHAR(20) NOT NULL,
+    -> SSN   CHAR(9),
+    -> BDATE DATE,
+    -> ADDRESS VARCHAR(40),
+    -> SEX   CHAR,
+    -> SALARY DECIMAL(10,2),
+    -> DNO INT NOT NULL,
+    -> SUPER_SSN CHAR(9) NULL,
+    -> PRIMARY KEY(SSN),
+    -> FOREIGN KEY(SUPER_SSN) REFERENCES EMPLOYEE(SSN) ON DELETE CASCADE ON UPDATE CASCADE
+    -> );
+Query OK, 0 rows affected (0.58 sec)
+
+mysql> CREATE TABLE DEPARTMENT
+    -> (
+    -> DNAME VARCHAR(20) NOT NULL,
+    -> DNUMBER INT NOT NULL,
+    -> MGR_SSN CHAR(9) NULL,
+    -> MGR_START_DATE DATE,
+    -> PRIMARY KEY (DNUMBER),
+    -> UNIQUE(DNAME),
+    -> FOREIGN KEY (MGR_SSN) REFERENCES EMPLOYEE(SSN)
+    -> );
+Query OK, 0 rows affected (0.64 sec)
+
+mysql> CREATE TABLE DEPT_LOCATIONS
+    -> (
+    -> DNUMBER INT NOT NULL,
+    -> DLOCATION VARCHAR(20) NOT NULL,
+    -> PRIMARY KEY (DNUMBER, DLOCATION),
+    -> FOREIGN KEY (DNUMBER) REFERENCES DEPARTMENT(DNUMBER)
+    -> );
+Query OK, 0 rows affected (0.47 sec)
+
+mysql> CREATE TABLE PROJECT
+    -> (
+    -> PNAME VARCHAR(20) NOT NULL,
+    -> PNUMBER INT NOT NULL,
+    -> PLOCATION VARCHAR(20),
+    -> Dnum INT NOT NULL,
+    -> PRIMARY KEY (PNUMBER),
+    -> UNIQUE(PNAME),
+    -> FOREIGN KEY (DNUM) REFERENCES DEPARTMENT(DNUMBER)
+    -> );
+Query OK, 0 rows affected (0.52 sec)
+
+mysql> CREATE TABLE WORKS_ON
+    -> (
+    -> ESSN CHAR(9) NOT NULL,
+    -> PNO INT NOT NULL,
+    -> HOURS DECIMAL(3,1) NOT NULL,
+    -> PRIMARY KEY(ESSN,PNO),
+    -> FOREIGN KEY(ESSN) REFERENCES EMPLOYEE (SSN),
+    -> FOREIGN KEY(PNO) REFERENCES PROJECT(PNUMBER)
+    -> );
+Query OK, 0 rows affected (0.41 sec)
+
+mysql> ALTER TABLE EMPLOYEE
+    -> ADD FOREIGN KEY (DNO)
+    -> REFERENCES DEPARTMENT(DNUMBER);
+Query OK, 0 rows affected (1.00 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
